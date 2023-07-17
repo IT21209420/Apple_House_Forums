@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-router.post("/login");
+
 
 router.post("/register", async (req, res) => {
   const { email, password, role } = req.body;
@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
     const isPsswordMatch = await bcrypt.compare(
       password,
       isUserExist.password
-    );
+    ); 
 
     if (!isPsswordMatch)
       return res.status(400).json({ error: "Invalid email or password." });
@@ -92,7 +92,7 @@ router.post("/login", async (req, res) => {
     });
 
     const user = { ...isUserExist._doc, password: undefined };
-    return res.status(200).json({ jwtToken, user });
+    return res.status(200).json({ jwtToken});
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: err.message });
