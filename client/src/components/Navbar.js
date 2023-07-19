@@ -1,7 +1,13 @@
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
+import ToastContext from "../context/ToastContext";
 
-import { Link } from "react-router-dom"; 
 
-const Navbar = ({ title = "Apple House" }) => { 
+const Navbar = ({ title = "Apple House" }) => {
+  const { toast } = useContext(ToastContext);
+  const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   return (
     <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
       <div className="container-fluid">
@@ -21,20 +27,36 @@ const Navbar = ({ title = "Apple House" }) => {
         </button>
         <div className="collapse navbar-collapse" id="navbarColor02">
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link to="./login" style={{ textDecoration: "none" }}>
-                <a className="nav-link">
-                  Login
-                </a>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="./register" style={{ textDecoration: "none" }}>
-                <a className="nav-link">
-                  Register
-                </a>
-              </Link>
-            </li>
+            {user ? (
+              <>
+                <li
+                  className="nav-item"
+                  onClick={() => {
+                    setUser(null);
+                    localStorage.clear();
+                    toast.success("Logged out successfully!")
+                    navigate("/login" ,{replace:true})
+                  }}
+                >
+                  <button type="button" class="btn btn-danger">
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link to="./login" style={{ textDecoration: "none" }}>
+                    <a className="nav-link">Login</a>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="./register" style={{ textDecoration: "none" }}>
+                    <a className="nav-link">Register</a>
+                  </Link>
+                </li>
+              </>
+            )}
 
             {/* <li className="nav-item dropdown">
           <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>

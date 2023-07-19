@@ -30,7 +30,7 @@ const authenticateToken = (req, res, next) => {
       }
     });
   } else {
-    return res.status(403).json({ error: "Forbidden 🛑🛑" });
+    return res.status(403).json({ error: "Forbidden" });
   }
 };
 

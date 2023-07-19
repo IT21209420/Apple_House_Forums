@@ -2,12 +2,11 @@ import express from "express";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import auth from "../middlewares/auth.js";
 
 const router = express.Router();
 
-
-
+//register route
 router.post("/register", async (req, res) => {
   const { email, password, role } = req.body;
 
@@ -52,6 +51,8 @@ router.post("/register", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
+
+// login route
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -76,10 +77,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password." });
 
     //if email exists match password
-    const isPsswordMatch = await bcrypt.compare(
-      password,
-      isUserExist.password
-    ); 
+    const isPsswordMatch = await bcrypt.compare(password, isUserExist.password);
 
     if (!isPsswordMatch)
       return res.status(400).json({ error: "Invalid email or password." });
@@ -92,11 +90,15 @@ router.post("/login", async (req, res) => {
     });
 
     const user = { ...isUserExist._doc, password: undefined };
-    return res.status(200).json({ jwtToken});
+    return res.status(200).json({ jwtToken, user });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: err.message });
   }
+});
+
+router.get("/me", auth, async (req, res) => {
+  return res.status(200).json({ ...req.user._doc });
 });
 
 export default router;
