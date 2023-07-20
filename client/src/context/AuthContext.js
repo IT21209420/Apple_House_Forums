@@ -51,7 +51,7 @@ export const AuthContextProvider = ({ children }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...userData }),
+        body: JSON.stringify({ ...userData }), 
       });
       const result = await res.json();
       if (!result.error) {

@@ -3,25 +3,25 @@ import { Schema, InferSchemaType, model, Types } from "mongoose";
 
 const PostSchema = new Schema(
   {
-    content: {
+    title: {
       type: String,
       required: [true, "Content is required"],
     },
-    isApproved: {
-      type: Boolean,  
+    text: {
+      type: String,  
       required: true,
     },
-    feedback: {
-      type: String,
-    },
-    comments: {
-      type: [Types.ObjectId],
-      ref: "Comments",
-    },
-    postedBy: {
-      type: Types.ObjectId,
-      ref: "User",
-    },
+    // feedback: {
+    //   type: String,
+    // },
+    // comments: {
+    //   type: [Types.ObjectId],
+    //   ref: "Comments",
+    // },
+    // postedBy: {
+    //   type: Types.ObjectId,
+    //   ref: "User",
+    // },
   },
 
   { timestamps: true }
