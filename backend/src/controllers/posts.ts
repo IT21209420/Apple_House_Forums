@@ -124,7 +124,7 @@ export const deletePost: RequestHandler = async (req, res, next) => {
     // PostModel.findByIdAndRemove(postId);
     await PostModel.findByIdAndDelete(postId);
     res.sendStatus(204); //status dont send response it self json resoponsible for it in this case we use sendStatus for that
-  } catch (error) {
+  } catch (error) { 
     next(error);
   }
 };
