@@ -7,6 +7,6 @@ router.get("/", PostsController.getPosts);
 router.get("/:postId", PostsController.getPost);//after colon data read by express and put to req object
 router.post("/", PostsController.createPosts);
 router.patch("/:postId", PostsController.updatePost);
-router.delete("/:postId", PostsController.deletePost);
+router.delete("/:postId", PostsController.deletePost);  
 
 export default router;
