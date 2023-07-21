@@ -3,7 +3,7 @@ import logo from "./logo.svg";
 import * as PostsApi from "./network/posts_api";
 import { Post as PostModel } from "./models/post";
 import Post from "./components/Post";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import styles from "./styles/postPage.module.css";
 import styleUtils from "./styles/utils.module.css";
 import AddEditPost from "./components/AddEditPost";
@@ -12,15 +12,35 @@ function App() {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [showAddPost, setShowAddPost] = useState(false);
   const [postToEdit, setPostToEdit] = useState<PostModel | null>(null);
+  const [postLoading, setPostLoading] = useState(true);
+  const [showPostsLoadingError, setShowPostsLoadingError] = useState(false);
+  const gridPosts = (
+    <Row xs={1} md={2} xl={3} className={`g-4 ${styles.postsGrid}`}>
+      {posts.map((post) => (
+        <Col key={post._id}>
+          <Post
+            post={post}
+            className={styles.post}
+            onPostClicked={setPostToEdit}
+            onDletePostClicked={deletPost}
+          />
+        </Col>
+      ))}
+    </Row>
+  );
 
   useEffect(() => {
     async function loadData() {
       try {
+        setShowPostsLoadingError(false);
+        setPostLoading(true);
         const posts = await PostsApi.fetchPosts();
         setPosts(posts);
       } catch (error) {
         console.error(error);
-        alert(error);
+        setShowPostsLoadingError(true);
+      } finally {
+        setPostLoading(false);
       }
     }
     loadData();
@@ -36,7 +56,7 @@ function App() {
     }
   }
   return (
-    <Container>
+    <Container className={styles.postsPage}>
       <Button
         onClick={() => {
           setShowAddPost(true);
@@ -45,18 +65,11 @@ function App() {
       >
         Add Post
       </Button>
-      <Row xs={1} md={2} xl={3} className="g-4">
-        {posts.map((post) => (
-          <Col key={post._id}>
-            <Post
-              post={post}
-              className={styles.post}
-              onPostClicked={setPostToEdit}
-              onDletePostClicked={deletPost}
-            />
-          </Col>
-        ))}
-      </Row>
+      {postLoading && <Spinner animation="border" variant="primary" />}
+      {showPostsLoadingError && <p>Something went wrong!.</p>}
+      {!postLoading && !showPostsLoadingError && (
+        <>{posts.length > 0 ? gridPosts : <p>Not any posts</p>}</>
+      )}
       {showAddPost && (
         <AddEditPost
           onDismiss={() => {
@@ -81,7 +94,6 @@ function App() {
                   ? updatedPost
                   : existingPost
               )
-
             );
             setPostToEdit(null);
           }}
