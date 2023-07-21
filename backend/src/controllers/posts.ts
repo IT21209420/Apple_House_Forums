@@ -46,6 +46,7 @@ export const createPosts: RequestHandler<
 > = async (req, res, next) => {
   const title = req.body.title;
   const text = req.body.text;
+  
 
   try {
     if (!title) {
