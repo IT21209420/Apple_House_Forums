@@ -7,6 +7,7 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import styles from "./styles/postPage.module.css";
 import styleUtils from "./styles/utils.module.css";
 import AddPost from "./components/AddPost";
+
 function App() {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [showAddPost, setShowAddPost] = useState(false);
@@ -59,7 +60,10 @@ function App() {
           onDismiss={() => {
             setShowAddPost(false);
           }}
-          onPostSaved={() => {}}
+          onPostSaved={(newPost) => {
+            setPosts([...posts, newPost]);
+            setShowAddPost(false);
+          }}
         />
       )}
     </Container>
