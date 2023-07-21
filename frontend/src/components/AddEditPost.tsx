@@ -5,21 +5,32 @@ import { PostInput } from "../network/posts_api";
 import * as PostsApi from "../network/posts_api";
 
 interface AddPostProps {
+  postToEdit?: Post;
   onDismiss: () => void;
   onPostSaved: (post: Post) => void;
 }
 
-const AddPost = ({ onDismiss, onPostSaved }: AddPostProps) => {
+const AddEditPost = ({ onDismiss, onPostSaved, postToEdit }: AddPostProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<PostInput>();
+  } = useForm<PostInput>({
+    defaultValues: {
+      title: postToEdit?.title || "",
+      text: postToEdit?.text || "",
+    },
+  });
 
   async function onSubmit(input: PostInput) {
-
     try {
-      const postResponse = await PostsApi.createPost(input);
+      let postResponse: Post;
+      if (postToEdit) {
+        postResponse = await PostsApi.updatePost(postToEdit._id, input);
+      } else {
+        postResponse = await PostsApi.createPost(input);
+      }
+
       onPostSaved(postResponse);
     } catch (error) {
       console.error(error);
@@ -28,9 +39,9 @@ const AddPost = ({ onDismiss, onPostSaved }: AddPostProps) => {
   }
 
   return (
-    <Modal show onHide={onDismiss}>
+    <Modal show onHide={onDismiss} >
       <Modal.Header>
-        <Modal.Title>Add Post</Modal.Title>
+        <Modal.Title>{postToEdit? "Edit Post" : "Add Post"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form id="addPostForm" onSubmit={handleSubmit(onSubmit)}>
@@ -48,7 +59,13 @@ const AddPost = ({ onDismiss, onPostSaved }: AddPostProps) => {
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Text</Form.Label>
-            <Form.Control as="textarea" rows={5} placeholder="Text" isInvalid={!!errors.text}{...register("text", { required: "Required" })} />
+            <Form.Control
+              as="textarea"
+              rows={5}
+              placeholder="Text"
+              isInvalid={!!errors.text}
+              {...register("text", { required: "Required" })}
+            />
           </Form.Group>
         </Form>
       </Modal.Body>
@@ -61,4 +78,4 @@ const AddPost = ({ onDismiss, onPostSaved }: AddPostProps) => {
   );
 };
 
-export default AddPost;
+export default AddEditPost;

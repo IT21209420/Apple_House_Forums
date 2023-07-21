@@ -6,11 +6,12 @@ import { MdDelete } from "react-icons/md";
 import styleUtils from "../styles/utils.module.css";
 interface PostProps {
   post: PostModel;
+  onPostClicked : (post :PostModel) =>void 
   onDletePostClicked: (post: PostModel) => void;
   className?: string;
 }
 
-const Post = ({ post, className, onDletePostClicked }: PostProps) => {
+const Post = ({ post, className, onDletePostClicked,onPostClicked }: PostProps) => {
   const { title, text, createdAt, updatedAt } = post;
 
   let updatedCreatedAt: string;
@@ -20,7 +21,7 @@ const Post = ({ post, className, onDletePostClicked }: PostProps) => {
     updatedCreatedAt = "Created : " + dateFormat(createdAt);
   }
   return (
-    <Card className={`${styles.postCard} ${className}`}>
+    <Card className={`${styles.postCard} ${className}`} onClick={()=>onPostClicked(post)}>
       <Card.Body className={styles.cardBody}>
         <Card.Title className={styleUtils.flexCenter}>
           {title}

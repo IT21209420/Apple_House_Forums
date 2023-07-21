@@ -6,11 +6,12 @@ import Post from "./components/Post";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import styles from "./styles/postPage.module.css";
 import styleUtils from "./styles/utils.module.css";
-import AddPost from "./components/AddPost";
+import AddEditPost from "./components/AddEditPost";
 
 function App() {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [showAddPost, setShowAddPost] = useState(false);
+  const [postToEdit, setPostToEdit] = useState<PostModel | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -50,19 +51,39 @@ function App() {
             <Post
               post={post}
               className={styles.post}
+              onPostClicked={setPostToEdit}
               onDletePostClicked={deletPost}
             />
           </Col>
         ))}
       </Row>
       {showAddPost && (
-        <AddPost
+        <AddEditPost
           onDismiss={() => {
             setShowAddPost(false);
           }}
           onPostSaved={(newPost) => {
             setPosts([...posts, newPost]);
             setShowAddPost(false);
+          }}
+        />
+      )}
+      {postToEdit && (
+        <AddEditPost
+          postToEdit={postToEdit}
+          onDismiss={() => {
+            setPostToEdit(null);
+          }}
+          onPostSaved={(updatedPost) => {
+            setPosts(
+              posts.map((existingPost) =>
+                existingPost._id === updatedPost._id
+                  ? updatedPost
+                  : existingPost
+              )
+
+            );
+            setPostToEdit(null);
           }}
         />
       )}

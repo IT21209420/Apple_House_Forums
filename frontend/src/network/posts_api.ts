@@ -18,7 +18,7 @@ export async function fetchPosts(): Promise<Post[]> {
   return res.json();
 }
 export interface PostInput {
-  title: string;
+  title?: string;
   text?: string;
 }
 
@@ -35,4 +35,15 @@ export async function createPost(post: PostInput): Promise<Post> {
 
 export async function deletePost(postId: string) {
   await dataFetch("/api/posts/" + postId, { method: "DELETE" });
+}
+
+export async function updatePost(postId: string, post: PostInput): Promise<Post> {
+  const response = await dataFetch("/api/posts/" + postId, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(post),
+  });
+  return response.json();
 }
