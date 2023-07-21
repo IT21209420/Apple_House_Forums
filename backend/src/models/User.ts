@@ -1,4 +1,4 @@
-import {InferSchemaType , model , Schema} from "mongoose";
+import { InferSchemaType, model, Schema } from "mongoose";
 
 const UserSchema = new Schema({
   email: {
@@ -11,11 +11,12 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: [true, "password is required"],
+    select: false,
   },
 });
 type Note = InferSchemaType<typeof UserSchema>;
 
 //Creating a model
-const User =  model<Note>("User", UserSchema);
+const User = model<Note>("User", UserSchema);
 
 export default User;
