@@ -7,9 +7,7 @@ import bcrypt from "bcrypt";
 export const getAuth :RequestHandler =async (req,res,next) => {
     const authUserId = req.session.userId
     try {
-        if(!authUserId){
-            throw createHttpError(401, "Not Authenticated")
-        }
+        
 
         const user = await UserModel.findById(authUserId).exec()
         res.status(200).json(user)

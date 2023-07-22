@@ -8,6 +8,7 @@ import createHttpError, { isHttpError } from "http-errors";
 import session from "express-session";
 import env from "./util/envValidate";
 import mongooseStrore from "connect-mongo";
+import { requiresAuth } from "./middleware/auth";
 
 const app = express();
 
@@ -32,7 +33,7 @@ app.use(
 );
 
 //routes
-app.use("/api/posts", postsRoutes);
+app.use("/api/posts",requiresAuth, postsRoutes);
 app.use("/api/users", usersRoutes);
 
 //handle unknown end point

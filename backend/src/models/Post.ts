@@ -1,14 +1,17 @@
-import { Schema, InferSchemaType, model, Types } from "mongoose";
-
+import { Schema, InferSchemaType, model } from "mongoose";
 
 const PostSchema = new Schema(
   {
+    userId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
     title: {
       type: String,
       required: [true, "Content is required"],
     },
     text: {
-      type: String,  
+      type: String,
       required: true,
     },
     // feedback: {

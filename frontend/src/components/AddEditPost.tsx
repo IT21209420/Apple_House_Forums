@@ -3,6 +3,7 @@ import { Post } from "../models/post";
 import { useForm } from "react-hook-form";
 import { PostInput } from "../network/posts_api";
 import * as PostsApi from "../network/posts_api";
+import TextInput from "./form/TextInput";
 
 interface AddPostProps {
   postToEdit?: Post;
@@ -39,34 +40,30 @@ const AddEditPost = ({ onDismiss, onPostSaved, postToEdit }: AddPostProps) => {
   }
 
   return (
-    <Modal show onHide={onDismiss} >
-      <Modal.Header>
-        <Modal.Title>{postToEdit? "Edit Post" : "Add Post"}</Modal.Title>
+    <Modal show onHide={onDismiss}>
+      <Modal.Header closeButton>
+        <Modal.Title>{postToEdit ? "Edit Post" : "Add Post"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form id="addPostForm" onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Title"
-              isInvalid={!!errors.title}
-              {...register("title", { required: "Required" })}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.title?.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Text</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={5}
-              placeholder="Text"
-              isInvalid={!!errors.text}
-              {...register("text", { required: "Required" })}
-            />
-          </Form.Group>
+          <TextInput
+            name="title"
+            label="Title"
+            type="text"
+            placeholder="Title"
+            register={register}
+            registerOptions={{ required: "Required" }}
+            error={errors.title}
+          />
+
+          <TextInput
+            name="text"
+            label="Text"
+            as="textarea"
+            rows={5}
+            placeholder="Text"
+            register={register}
+          />
         </Form>
       </Modal.Body>
       <Modal.Footer>
