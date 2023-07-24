@@ -13,6 +13,13 @@ const UserSchema = new Schema({
     required: [true, "password is required"],
     select: false,
   },
+
+  roles: 
+    {
+      type: String,
+      default: "User",
+    },
+  
 });
 type Note = InferSchemaType<typeof UserSchema>;
 

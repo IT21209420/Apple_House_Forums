@@ -3,29 +3,56 @@ import PostModel from "../models/Post";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import { assertIsDefined } from "../util/assertisDefined";
-
+import UserModel from "../models/User";
 //getallposts
 export const getPosts: RequestHandler = async (req, res, next) => {
   const authuser = req.session.userId;
 
   //RequestHandler Give varible type instead giving idividual types for parameters
   try {
-    assertIsDefined(authuser)
-    const posts = await PostModel.find({userId : authuser}).exec(); //exec return promise
+    assertIsDefined(authuser);
+    const posts = await PostModel.find({ userId: authuser }).exec(); //exec return promise
     res.status(200).json(posts); //200 equest was successful
   } catch (error) {
     next(error); //call error handler
   }
 };
 
+export const getAllApprovedPosts: RequestHandler = async (req, res, next) => {
+  const authuser = req.session.userId;
+
+  //RequestHandler Give varible type instead giving idividual types for parameters
+  try {
+    assertIsDefined(authuser);
+    const posts = await PostModel.find({ approved: true }).exec(); //exec return promise
+    res.status(200).json(posts); //200 equest was successful
+  } catch (error) {
+    next(error); //call error handler
+  }
+};
+export const getToBeAllApprovedPosts: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const authuser = req.session.userId;
+
+  //RequestHandler Give varible type instead giving idividual types for parameters
+  try {
+    assertIsDefined(authuser);
+    const posts = await PostModel.find({ approved: null }).exec(); //exec return promise
+    res.status(200).json(posts); //200 equest was successful
+  } catch (error) {
+    next(error); //call error handler
+  }
+};
 //get specific post
 export const getPost: RequestHandler = async (req, res, next) => {
   const postId = req.params.postId;
   const authuser = req.session.userId;
 
-
   try {
-    assertIsDefined(authuser)
+    assertIsDefined(authuser);
     if (!mongoose.isValidObjectId(postId)) {
       throw createHttpError(400, "Invalid Post ID");
     }
@@ -35,7 +62,7 @@ export const getPost: RequestHandler = async (req, res, next) => {
       throw createHttpError(404, "Post not found");
     }
 
-    if(!post.userId.equals(authuser)){
+    if (!post.userId.equals(authuser)) {
       throw createHttpError(401, "Cannot acces this post");
     }
     res.status(200).json(post);
@@ -46,6 +73,7 @@ export const getPost: RequestHandler = async (req, res, next) => {
 interface CreatePostBody {
   title?: string;
   text?: string;
+    approved?: boolean;
 }
 
 //create a post
@@ -57,10 +85,12 @@ export const createPosts: RequestHandler<
 > = async (req, res, next) => {
   const title = req.body.title;
   const text = req.body.text;
+  const approved = req.body.approved;
+
   const authuser = req.session.userId;
 
   try {
-    assertIsDefined(authuser)
+    assertIsDefined(authuser);
     if (!title) {
       throw createHttpError(400, "Post must have a title"); //400 bad request
     }
@@ -69,9 +99,10 @@ export const createPosts: RequestHandler<
     }
 
     const newPost = await PostModel.create({
-      userId :authuser,
+      userId: authuser,
       title: title,
       text: text,
+      approved : approved
     });
     res.status(201).json(newPost); //201 request was successful and a resource was created as a result
   } catch (error) {
@@ -84,6 +115,8 @@ interface UpdatePostParams {
 interface UpdatePostBody {
   title?: string;
   text?: string;
+  approved?: boolean;
+  feedback?: string;
 }
 
 export const updatePost: RequestHandler<
@@ -95,10 +128,12 @@ export const updatePost: RequestHandler<
   const postId = req.params.postId;
   const title = req.body.title;
   const text = req.body.text;
+  const approved = req.body.approved;
+  const feedback = req.body.feedback;
   const authuser = req.session.userId;
-  
+
   try {
-    assertIsDefined(authuser) 
+    // assertIsDefined(authuser);
     if (!mongoose.isValidObjectId(postId)) {
       throw createHttpError(400, "Invalid Post ID");
     }
@@ -113,12 +148,26 @@ export const updatePost: RequestHandler<
     if (!post) {
       throw createHttpError(404, "Post not found");
     }
-    if(!post.userId.equals(authuser)){
+    const user = await UserModel.findOne({ _id: authuser })
+    .select("+password")
+    .exec();
+  if (user?.roles == "User") {
+    if(authuser)
+    if (!post.userId.equals(authuser)) {
       throw createHttpError(401, "Cannot acces this post");
     }
+  }
+    
 
     post.title = title;
     post.text = text;
+
+    if(approved === true || approved === false ){
+      post.approved = approved
+    }
+    feedback &&(post.feedback  = feedback)
+    post.comments.push("test")
+    
 
     const updatedPost = await post.save();
 
@@ -133,7 +182,7 @@ export const deletePost: RequestHandler = async (req, res, next) => {
   const authuser = req.session.userId;
 
   try {
-    assertIsDefined(authuser) 
+    assertIsDefined(authuser);
 
     if (!mongoose.isValidObjectId(postId)) {
       throw createHttpError(400, "Invalid Post ID");
@@ -144,7 +193,7 @@ export const deletePost: RequestHandler = async (req, res, next) => {
       throw createHttpError(404, "Post not found");
     }
     // PostModel.findByIdAndRemove(postId);
-    if(!post.userId.equals(authuser)){
+    if (!post.userId.equals(authuser)) {
       throw createHttpError(401, "Cannot acces this post");
     }
     await PostModel.findByIdAndDelete(postId);

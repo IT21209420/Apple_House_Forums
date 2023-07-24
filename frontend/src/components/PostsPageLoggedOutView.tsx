@@ -2,7 +2,7 @@ import React from 'react'
 
 const PostsPageLoggedOutView = () => {
   return (
-    <p>Please logged in</p>
+    <p>Not authorized</p>
   )
 }
 

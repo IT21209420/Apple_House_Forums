@@ -1,3 +1,4 @@
+import React from 'react'
 import { Modal, Form, Button } from "react-bootstrap";
 import { Post } from "../models/post";
 import { useForm } from "react-hook-form";
@@ -10,14 +11,14 @@ interface AddPostProps {
   postToEdit?: Post;
   onDismiss: () => void;
   onPostSaved: (post: Post) => void;
-  type?: Type;
+ 
 }
 
-const AddEditPost = ({
+const AddFeedback = ({
   onDismiss,
   onPostSaved,
   postToEdit,
-  type,
+ 
 }: AddPostProps) => {
   const {
     register,
@@ -33,20 +34,13 @@ const AddEditPost = ({
   async function onSubmit(input: PostInput) {
     try {
       let postResponse: Post;
-      if (postToEdit) {
-        postResponse = await PostsApi.updatePost(postToEdit._id, input);
-      } else {
-        if (type === Type.TOBEAPPROVED) {
-          postResponse = await PostsApi.createPost({
-            ...input,
-            approved : true,
-          });
-        } else {
-          postResponse = await PostsApi.createPost(input);
-        }
-      }
 
-      onPostSaved(postResponse);
+      if (postToEdit) {
+        input = {...input , approved :false }
+        postResponse = await PostsApi.updatePost(postToEdit._id, input);
+        onPostSaved(postResponse);
+      } 
+
     } catch (error) {
       console.error(error);
       alert(error);
@@ -56,32 +50,24 @@ const AddEditPost = ({
   return (
     <Modal show onHide={onDismiss}>
       <Modal.Header closeButton>
-        <Modal.Title>{postToEdit ? "Edit Post" : "Add Post"}</Modal.Title>
+       
       </Modal.Header>
       <Modal.Body>
-        <Form id="addPostForm" onSubmit={handleSubmit(onSubmit)}>
+        <Form id="addFeedback" onSubmit={handleSubmit(onSubmit)}>
           <TextInput
-            name="title"
-            label="Title"
+            name="feedback"
+            label="Feedback"
             type="text"
-            placeholder="Title"
+            placeholder="Add your feed back"
             register={register}
             registerOptions={{ required: "Required" }}
-            error={errors.title}
+            error={errors.feedback}
           />
 
-          <TextInput
-            name="text"
-            label="Text"
-            as="textarea"
-            rows={5}
-            placeholder="Text"
-            register={register}
-          />
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button type="submit" form="addPostForm" disabled={isSubmitting}>
+        <Button type="submit" form="addFeedback" disabled={isSubmitting}>
           Save
         </Button>
       </Modal.Footer>
@@ -89,4 +75,4 @@ const AddEditPost = ({
   );
 };
 
-export default AddEditPost;
+export default AddFeedback;

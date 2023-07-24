@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { Post as PostModel } from "../models/post";
 import * as PostsApi from "../network/posts_api";
+import styles from "../styles/postPage.module.css";
 import styleUtils from "../styles/utils.module.css";
 import AddEditPost from "./AddEditPost";
 import Post from "./Post";
-import styles from "../styles/postPage.module.css";
 import { Type } from "../models/user";
+import AddFeedback from "./AddFeedback";
 
-const PostsPageLoggedInView = () => {
+const AllToBeApproved = () => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [showAddPost, setShowAddPost] = useState(false);
-  const [postToEdit, setPostToEdit] = useState<PostModel | null>(null);
+  const [postToReject, setPostToReject] = useState<PostModel | null>(null);
+
   const [postLoading, setPostLoading] = useState(true);
   const [showPostsLoadingError, setShowPostsLoadingError] = useState(false);
 
@@ -20,25 +22,25 @@ const PostsPageLoggedInView = () => {
       {posts.map((post) => (
         <Col key={post._id}>
           <Post
-          type={Type.MYPOSTS}
+            type={Type.TOBEAPPROVED}
             post={post}
             className={styles.post}
-            onPostClicked={setPostToEdit}
-            onDletePostClicked={deletPost}
-            approve={null}
-            reject={null}
+            onPostClicked={null}
+            onDletePostClicked={null}
+            approve={approvePost}
+            reject={setPostToReject}
           />
         </Col>
       ))}
     </Row>
-  ); 
+  );
 
   useEffect(() => {
-    async function loadData()  {
+    async function loadData() {
       try {
         setShowPostsLoadingError(false);
         setPostLoading(true);
-        const posts = await PostsApi.fetchPosts();
+        const posts = await PostsApi.fetchToBeApprovedPosts();
         setPosts(posts);
       } catch (error) {
         console.error(error);
@@ -59,6 +61,30 @@ const PostsPageLoggedInView = () => {
       alert(error);
     }
   }
+  async function approvePost(post: PostModel) {
+    try {
+      const postResponse = await PostsApi.updatePost(post._id, post);
+
+      setPosts(
+        posts.filter((existingPost) => existingPost._id !== postResponse._id)
+      );
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }
+  //   async function rejectPost(post: PostModel) {
+
+  //     try {
+  //         const postResponse = await PostsApi.updatePost(post._id ,post);
+
+  //       setPosts(posts.filter((existingPost) => existingPost._id !== postResponse._id));
+
+  //     } catch (error) {
+  //       console.error(error);
+  //       alert(error);
+  //     }
+  //   }
 
   return (
     <>
@@ -70,10 +96,26 @@ const PostsPageLoggedInView = () => {
       >
         Add Post
       </Button>
+
       {postLoading && <Spinner animation="border" variant="primary" />}
       {showPostsLoadingError && <p>Something went wrong!.</p>}
       {!postLoading && !showPostsLoadingError && (
         <>{posts.length > 0 ? gridPosts : <p>Not any posts</p>}</>
+      )}
+      {postToReject && (
+        <AddFeedback
+          postToEdit={postToReject}
+          onDismiss={() => {
+            setPostToReject(null);
+          }}
+          onPostSaved={(updatedPost) => {
+           
+            setPosts(posts.filter((existingPost) => existingPost._id !== updatedPost._id));
+            setPostToReject(null);
+           
+          }}
+         
+        />
       )}
       {showAddPost && (
         <AddEditPost
@@ -86,26 +128,8 @@ const PostsPageLoggedInView = () => {
           }}
         />
       )}
-      {postToEdit && (
-        <AddEditPost
-          postToEdit={postToEdit}
-          onDismiss={() => {
-            setPostToEdit(null);
-          }}
-          onPostSaved={(updatedPost) => {
-            setPosts(
-              posts.map((existingPost) =>
-                existingPost._id === updatedPost._id
-                  ? updatedPost
-                  : existingPost
-              )
-            );
-            setPostToEdit(null);
-          }}
-        />
-      )}
     </>
   );
 };
 
-export default PostsPageLoggedInView;
+export default AllToBeApproved;

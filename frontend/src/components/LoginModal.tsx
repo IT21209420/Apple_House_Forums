@@ -7,6 +7,7 @@ import TextInput from "./form/TextInput";
 import styleUtils from "../styles/utils.module.css";
 import { useState } from "react";
 import { UnauthorizedError } from "../errors/http_errors";
+import { Navigate } from "react-router";
 
 
 interface LoginModalProps {
@@ -27,6 +28,7 @@ const LoginModal = ({ onDismiss, onLoginSuccessful }: LoginModalProps) => {
     try {
       const user = await PotesApi.login(credentials);
       onLoginSuccessful(user);
+      <Navigate to="/" replace={true}/>
     } catch (error) {
       if (error instanceof UnauthorizedError) {
         setErrorText(error.message);

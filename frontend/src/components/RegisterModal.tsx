@@ -12,20 +12,17 @@ interface RegisterModalProps {
   onRegisterSuccessful: (user: User) => void;
 }
 
-
-
 const RegisterModal = ({
   onDismiss,
   onRegisterSuccessful,
 }: RegisterModalProps) => {
-
   const [errorText, setErrorText] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterCredentials>();
-  
+
   async function onSubmit(credentials: RegisterCredentials) {
     try {
       const newUser = await PostApi.register(credentials);
@@ -37,7 +34,6 @@ const RegisterModal = ({
         alert(error);
         console.error(error);
       }
-     
     }
   }
 
@@ -47,11 +43,7 @@ const RegisterModal = ({
         <Modal.Title>Register</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {errorText &&
-                    <Alert variant="danger">
-                        {errorText}
-                    </Alert>
-                }
+        {errorText && <Alert variant="danger">{errorText}</Alert>}
         <Form onSubmit={handleSubmit(onSubmit)}>
           <TextInput
             name="email"

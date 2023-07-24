@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Row, Spinner } from "react-bootstrap";
+import { Col, Row, Spinner } from "react-bootstrap";
 import { Post as PostModel } from "../models/post";
+import { Type } from "../models/user";
 import * as PostsApi from "../network/posts_api";
-import styleUtils from "../styles/utils.module.css";
+import styles from "../styles/postPage.module.css";
 import AddEditPost from "./AddEditPost";
 import Post from "./Post";
-import styles from "../styles/postPage.module.css";
-import { Type } from "../models/user";
 
-const PostsPageLoggedInView = () => {
+const AllPostPageLoggedInView = () => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [showAddPost, setShowAddPost] = useState(false);
   const [postToEdit, setPostToEdit] = useState<PostModel | null>(null);
@@ -20,25 +19,25 @@ const PostsPageLoggedInView = () => {
       {posts.map((post) => (
         <Col key={post._id}>
           <Post
-          type={Type.MYPOSTS}
+            type={Type.ALLPOSTS}
             post={post}
             className={styles.post}
             onPostClicked={setPostToEdit}
-            onDletePostClicked={deletPost}
+            onDletePostClicked={null}
             approve={null}
             reject={null}
           />
         </Col>
       ))}
     </Row>
-  ); 
+  );
 
   useEffect(() => {
-    async function loadData()  {
+    async function loadData() {
       try {
         setShowPostsLoadingError(false);
         setPostLoading(true);
-        const posts = await PostsApi.fetchPosts();
+        const posts = await PostsApi.fetchApprovedPosts();
         setPosts(posts);
       } catch (error) {
         console.error(error);
@@ -50,26 +49,11 @@ const PostsPageLoggedInView = () => {
     loadData();
   }, []);
 
-  async function deletPost(post: PostModel) {
-    try {
-      await PostsApi.deletePost(post._id);
-      setPosts(posts.filter((existingPost) => existingPost._id !== post._id));
-    } catch (error) {
-      console.error(error);
-      alert(error);
-    }
-  }
+  
 
   return (
     <>
-      <Button
-        onClick={() => {
-          setShowAddPost(true);
-        }}
-        className={`mb-4 ${styleUtils.blockCenter}`}
-      >
-        Add Post
-      </Button>
+      
       {postLoading && <Spinner animation="border" variant="primary" />}
       {showPostsLoadingError && <p>Something went wrong!.</p>}
       {!postLoading && !showPostsLoadingError && (
@@ -83,29 +67,15 @@ const PostsPageLoggedInView = () => {
           onPostSaved={(newPost) => {
             setPosts([...posts, newPost]);
             setShowAddPost(false);
+            
           }}
+         
         />
       )}
-      {postToEdit && (
-        <AddEditPost
-          postToEdit={postToEdit}
-          onDismiss={() => {
-            setPostToEdit(null);
-          }}
-          onPostSaved={(updatedPost) => {
-            setPosts(
-              posts.map((existingPost) =>
-                existingPost._id === updatedPost._id
-                  ? updatedPost
-                  : existingPost
-              )
-            );
-            setPostToEdit(null);
-          }}
-        />
-      )}
+      
+       
     </>
   );
 };
 
-export default PostsPageLoggedInView;
+export default AllPostPageLoggedInView;

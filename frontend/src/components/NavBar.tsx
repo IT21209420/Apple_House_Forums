@@ -1,8 +1,9 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { User } from "../models/user";
+import { Role, User } from "../models/user";
 import LoggedInView from "./LoggedInView";
 import LoggedOutView from "./LoggedOutView";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 
 interface NavBarProps {
     loggedInUser: User | null,
@@ -12,18 +13,27 @@ interface NavBarProps {
 }
 
 const NavBar = ({ loggedInUser, onSignUpClicked, onLoginClicked, onLogoutSuccessful }: NavBarProps) => {
+    
     return (
-        <Navbar bg="primary" variant="dark" expand="sm" sticky="top">
+        <Navbar bg="primary" variant="dark" expand="sm" sticky="top" margin-botttom="20px" >
             <Container>
-                <Navbar.Brand >
+                <Navbar.Brand as={Link}to="/" >
+               
                     Apple House Forums
+               
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="main-navbar" />
                 <Navbar.Collapse id="main-navbar">
                     <Nav>
-                        <Nav.Link>
-                            Privacy
-                        </Nav.Link>
+                        {  
+                           loggedInUser?.roles === Role.ADMIN ? <Nav.Link as={Link}to="/tobeApproved">To Be Approved Posts
+                           
+                       </Nav.Link > : <Nav.Link as={Link} to="/myposts" >
+                           My Posts
+                           
+                        </Nav.Link> 
+                        }
+                       
                     </Nav>
                     <Nav className="ms-auto">
                         {loggedInUser

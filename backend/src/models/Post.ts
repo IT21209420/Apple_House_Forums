@@ -14,17 +14,18 @@ const PostSchema = new Schema(
       type: String,
       required: true,
     },
-    // feedback: {
-    //   type: String,
-    // },
-    // comments: {
-    //   type: [Types.ObjectId],
-    //   ref: "Comments",
-    // },
-    // postedBy: {
-    //   type: Types.ObjectId,
-    //   ref: "User",
-    // },
+    approved: {
+      type: Boolean,
+      default: null,
+    },
+    feedback: {
+      type: String,
+    },
+    comments: {
+      type: [String],
+     
+    },
+    
   },
 
   { timestamps: true }

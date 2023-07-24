@@ -8,6 +8,11 @@ import { User } from "./models/user";
 import * as PostsApi from "./network/posts_api";
 import PostsPageLoggedInView from "./components/PostsPageLoggedInView";
 import PostsPageLoggedOutView from "./components/PostsPageLoggedOutView";
+import { Route, Routes } from "react-router";
+import { BrowserRouter } from "react-router-dom";
+import PostsPage from "./pages/PostsPage";
+import AllPostsPage from "./pages/AllPostsPage";
+import ToBeApprovedPosts from "./pages/ToBeApprovedPosts";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -27,6 +32,7 @@ function App() {
   }, []);
 
   return (
+    <BrowserRouter>
     <>
       <NavBar
         loggedInUser={loggedInUser}
@@ -40,14 +46,27 @@ function App() {
           setShowRegisterModal(true);
         }}
       />
-      <Container className={styles.postsPage}>
-        <>
-          {loggedInUser ? (
-            <PostsPageLoggedInView />
-          ) : (
-            <PostsPageLoggedOutView />
-          )}
-        </>
+      <Container className={styles.postsPage} style={{padding: "32px"}}>
+       
+        <Routes>
+						<Route
+							path='/'
+							element={<AllPostsPage loggedInUser={loggedInUser} />}
+						/>
+						<Route
+							path='/myposts'
+							element={<PostsPage loggedInUser={loggedInUser} />}
+						/>
+						<Route
+							path='/tobeapproved'
+							element={<ToBeApprovedPosts loggedInUser={loggedInUser} />}
+						/>
+            <Route
+							path='/*'
+							element={<>Not found</> }
+						/>
+            
+					</Routes>
       </Container>
       {showRegisterModal && (
         <RegisterModal
@@ -56,7 +75,7 @@ function App() {
           }}
           onRegisterSuccessful={(user) => {
             setLoggedInUser(user);
-            setShowRegisterModal(false)
+            setShowRegisterModal(false);
           }}
         />
       )}
@@ -64,15 +83,15 @@ function App() {
         <LoginModal
           onDismiss={() => {
             setShowLoginModal(false);
-           
           }}
           onLoginSuccessful={(user) => {
             setLoggedInUser(user);
-            setShowLoginModal(false)
+            setShowLoginModal(false);
           }}
         />
       )}
     </>
+    </BrowserRouter>
   );
 }
 

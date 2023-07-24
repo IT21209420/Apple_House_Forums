@@ -23,6 +23,7 @@ export async function getLoggedUser(): Promise<User> {
   const res = await dataFetch("/api/users", {
     method: "GET",
   });
+
   return res.json();
 }
 export interface RegisterCredentials {
@@ -64,10 +65,25 @@ export async function fetchPosts(): Promise<Post[]> {
   });
   return res.json();
 }
+export async function fetchApprovedPosts(): Promise<Post[]> {
+  const res = await dataFetch("/api/posts/getapprovedposts", {
+    method: "GET",
+  });
+  return res.json();
+}
+export async function fetchToBeApprovedPosts(): Promise<Post[]> {
+  const res = await dataFetch("/api/posts/gettobeapprovedposts", {
+    method: "GET",
+  });
+  return res.json();
+}
+
 
 export interface PostInput {
   title?: string;
   text?: string;
+  approved?: boolean;
+  feedback?:string
 }
 
 export async function createPost(post: PostInput): Promise<Post> {
