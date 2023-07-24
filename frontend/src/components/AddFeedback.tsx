@@ -67,7 +67,7 @@ const AddFeedback = ({
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button type="submit" form="addFeedback" disabled={isSubmitting}>
+        <Button variant="dark" type="submit" form="addFeedback" disabled={isSubmitting}>
           Save
         </Button>
       </Modal.Footer>

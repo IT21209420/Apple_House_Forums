@@ -15,7 +15,7 @@ interface NavBarProps {
 const NavBar = ({ loggedInUser, onSignUpClicked, onLoginClicked, onLogoutSuccessful }: NavBarProps) => {
     
     return (
-        <Navbar bg="primary" variant="dark" expand="sm" sticky="top" margin-botttom="20px" >
+        <Navbar bg="dark" data-bs-theme="dark" variant="dark" expand="sm" sticky="top" margin-botttom="20px" >
             <Container>
                 <Navbar.Brand as={Link}to="/" >
                

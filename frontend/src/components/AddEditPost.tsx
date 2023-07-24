@@ -36,6 +36,7 @@ const AddEditPost = ({
       if (postToEdit) {
         postResponse = await PostsApi.updatePost(postToEdit._id, input);
       } else {
+        console.log(type)
         if (type === Type.TOBEAPPROVED) {
           postResponse = await PostsApi.createPost({
             ...input,
@@ -81,7 +82,7 @@ const AddEditPost = ({
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button type="submit" form="addPostForm" disabled={isSubmitting}>
+        <Button variant="dark" type="submit" form="addPostForm" disabled={isSubmitting}>
           Save
         </Button>
       </Modal.Footer>

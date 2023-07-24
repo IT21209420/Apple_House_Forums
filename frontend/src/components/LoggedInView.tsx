@@ -24,7 +24,7 @@ const LoggeInView = ({ user, onLogoutSuccessful }: LoggeInViewProps) => {
             <Navbar.Text className="me-2">
                 Signed in as: {user.email}
             </Navbar.Text>
-            <Button onClick={logout}>Log out</Button>
+            <Button variant="dark" onClick={logout}>Log out</Button>
         </>
     );
 }

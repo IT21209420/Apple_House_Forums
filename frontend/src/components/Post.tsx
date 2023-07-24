@@ -81,7 +81,7 @@ const Post = ({
           {type === Type.MYPOSTS && approved === false ? <>feedback : {feedback} </>: null}
         </Card.Text>
         {type === Type.TOBEAPPROVED ?  <><Button variant="success" onClick={handleApprove}>Approve</Button> <Button variant="danger" onClick={handleReject}>Reject</Button> </>: null}
-        {type === Type.ALLPOSTS &&  <><Button variant="outline-info" >Add Comment</Button> </>}
+        {/* {type === Type.ALLPOSTS &&  <><Button variant="outline-info" >Add Comment</Button> </>} */}
       </Card.Body>
       <Card.Footer className="text-muted">{updatedCreatedAt}</Card.Footer>
     </Card>

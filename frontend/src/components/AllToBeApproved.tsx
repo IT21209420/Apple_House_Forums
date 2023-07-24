@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { Post as PostModel } from "../models/post";
+import { Type } from "../models/user";
 import * as PostsApi from "../network/posts_api";
 import styles from "../styles/postPage.module.css";
 import styleUtils from "../styles/utils.module.css";
 import AddEditPost from "./AddEditPost";
-import Post from "./Post";
-import { Type } from "../models/user";
 import AddFeedback from "./AddFeedback";
+import Post from "./Post";
 
 const AllToBeApproved = () => {
   const [posts, setPosts] = useState<PostModel[]>([]);
@@ -52,15 +52,7 @@ const AllToBeApproved = () => {
     loadData();
   }, []);
 
-  async function deletPost(post: PostModel) {
-    try {
-      await PostsApi.deletePost(post._id);
-      setPosts(posts.filter((existingPost) => existingPost._id !== post._id));
-    } catch (error) {
-      console.error(error);
-      alert(error);
-    }
-  }
+  
   async function approvePost(post: PostModel) {
     try {
       const postResponse = await PostsApi.updatePost(post._id, post);
@@ -73,22 +65,12 @@ const AllToBeApproved = () => {
       alert(error);
     }
   }
-  //   async function rejectPost(post: PostModel) {
 
-  //     try {
-  //         const postResponse = await PostsApi.updatePost(post._id ,post);
-
-  //       setPosts(posts.filter((existingPost) => existingPost._id !== postResponse._id));
-
-  //     } catch (error) {
-  //       console.error(error);
-  //       alert(error);
-  //     }
-  //   }
 
   return (
     <>
       <Button
+        variant="dark"
         onClick={() => {
           setShowAddPost(true);
         }}
@@ -109,12 +91,13 @@ const AllToBeApproved = () => {
             setPostToReject(null);
           }}
           onPostSaved={(updatedPost) => {
-           
-            setPosts(posts.filter((existingPost) => existingPost._id !== updatedPost._id));
+            setPosts(
+              posts.filter(
+                (existingPost) => existingPost._id !== updatedPost._id
+              )
+            );
             setPostToReject(null);
-           
           }}
-         
         />
       )}
       {showAddPost && (
@@ -122,10 +105,10 @@ const AllToBeApproved = () => {
           onDismiss={() => {
             setShowAddPost(false);
           }}
-          onPostSaved={(newPost) => {
-            setPosts([...posts, newPost]);
+          onPostSaved={() => {
             setShowAddPost(false);
           }}
+          type={Type.TOBEAPPROVED}
         />
       )}
     </>

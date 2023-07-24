@@ -8,8 +8,8 @@ interface LoggedOutViewProps {
 const LoggedOutView = ({ onSignUpClicked, onLoginClicked }: LoggedOutViewProps) => {
     return (
         <>
-            <Button onClick={onSignUpClicked}>Sign Up</Button>
-            <Button onClick={onLoginClicked}>Log In</Button>
+            <Button variant="dark" onClick={onSignUpClicked}>Sign Up</Button>
+            <Button variant="dark" onClick={onLoginClicked}>Log In</Button>
         </>
     );
 }

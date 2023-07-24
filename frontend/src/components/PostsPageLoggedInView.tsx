@@ -63,6 +63,7 @@ const PostsPageLoggedInView = () => {
   return (
     <>
       <Button
+      variant="dark"
         onClick={() => {
           setShowAddPost(true);
         }}

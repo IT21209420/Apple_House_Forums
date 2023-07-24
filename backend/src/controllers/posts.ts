@@ -97,6 +97,7 @@ export const createPosts: RequestHandler<
     if (!text) {
       throw createHttpError(400, "Post must have a content ");
     }
+    console.log(approved)
 
     const newPost = await PostModel.create({
       userId: authuser,
@@ -161,6 +162,7 @@ export const updatePost: RequestHandler<
 
     post.title = title;
     post.text = text;
+ 
 
     if(approved === true || approved === false ){
       post.approved = approved
@@ -176,6 +178,7 @@ export const updatePost: RequestHandler<
     next(error);
   }
 };
+
 
 export const deletePost: RequestHandler = async (req, res, next) => {
   const postId = req.params.postId;
