@@ -7,6 +7,8 @@ import TextInput from "./form/TextInput";
 import styleUtils from "../styles/utils.module.css";
 import { useState } from "react";
 import { ConflictError } from "../errors/http_errors";
+import { useNavigate } from "react-router";
+
 interface RegisterModalProps {
   onDismiss: () => void;
   onRegisterSuccessful: (user: User) => void;
@@ -16,6 +18,7 @@ const RegisterModal = ({
   onDismiss,
   onRegisterSuccessful,
 }: RegisterModalProps) => {
+  const navigate = useNavigate();
   const [errorText, setErrorText] = useState<string | null>(null);
   const {
     register,
@@ -27,6 +30,7 @@ const RegisterModal = ({
     try {
       const newUser = await PostApi.register(credentials);
       onRegisterSuccessful(newUser);
+      navigate("/");
     } catch (error) {
       if (error instanceof ConflictError) {
         setErrorText(error.message);

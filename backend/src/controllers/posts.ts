@@ -110,14 +110,69 @@ export const createPosts: RequestHandler<
     next(error); //call error handler
   }
 };
+interface updatePostAdminParams {
+  postId: string;
+}
+interface updatePostAdminBody {
+  approved?: boolean;
+  feedback?: string;
+}
+
+export const updatePostAdmin: RequestHandler<
+updatePostAdminParams,
+  unknown,
+  updatePostAdminBody,
+  unknown
+> = async (req, res, next) => {
+  const postId = req.params.postId;
+  const approved = req.body.approved;
+  const feedback = req.body.feedback;
+  const authuser = req.session.userId;
+
+  try {
+    
+    if (!mongoose.isValidObjectId(postId)) {
+      throw createHttpError(400, "Invalid Post ID");
+    }
+   
+    const post = await PostModel.findById(postId).exec();
+
+    if (!post) {
+      throw createHttpError(404, "Post not found");
+    }
+    const user = await UserModel.findOne({ _id: authuser })
+    .select("+password")
+    .exec();
+  if (user?.roles !== "Admin") {
+    
+      throw createHttpError(401, "Cannot acces this post");
+    
+  }
+ 
+
+    if(approved === true || approved === false ){
+      post.approved = approved
+    }
+    feedback &&(post.feedback  = feedback)
+ 
+    
+
+    const updatedPost = await post.save();
+
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 interface UpdatePostParams {
   postId: string;
 }
 interface UpdatePostBody {
   title?: string;
   text?: string;
-  approved?: boolean;
-  feedback?: string;
+ 
 }
 
 export const updatePost: RequestHandler<
@@ -129,12 +184,11 @@ export const updatePost: RequestHandler<
   const postId = req.params.postId;
   const title = req.body.title;
   const text = req.body.text;
-  const approved = req.body.approved;
-  const feedback = req.body.feedback;
+
   const authuser = req.session.userId;
 
   try {
-    // assertIsDefined(authuser);
+    assertIsDefined(authuser);
     if (!mongoose.isValidObjectId(postId)) {
       throw createHttpError(400, "Invalid Post ID");
     }
@@ -163,14 +217,6 @@ export const updatePost: RequestHandler<
     post.title = title;
     post.text = text;
  
-
-    if(approved === true || approved === false ){
-      post.approved = approved
-    }
-    feedback &&(post.feedback  = feedback)
-    post.comments.push("test")
-    
-
     const updatedPost = await post.save();
 
     res.status(200).json(updatedPost);
@@ -178,7 +224,6 @@ export const updatePost: RequestHandler<
     next(error);
   }
 };
-
 
 export const deletePost: RequestHandler = async (req, res, next) => {
   const postId = req.params.postId;

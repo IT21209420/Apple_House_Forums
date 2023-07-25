@@ -114,3 +114,16 @@ export async function updatePost(
   });
   return response.json();
 }
+export async function updatePostAdmin(
+  postId: string,
+  post: PostInput
+): Promise<Post> {
+  const response = await dataFetch("/api/posts/updatePostAdmin/" + postId, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(post),
+  });
+  return response.json();
+}

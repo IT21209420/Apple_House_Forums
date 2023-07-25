@@ -55,7 +55,7 @@ const AllToBeApproved = () => {
   
   async function approvePost(post: PostModel) {
     try {
-      const postResponse = await PostsApi.updatePost(post._id, post);
+      const postResponse = await PostsApi.updatePostAdmin(post._id, post);
 
       setPosts(
         posts.filter((existingPost) => existingPost._id !== postResponse._id)

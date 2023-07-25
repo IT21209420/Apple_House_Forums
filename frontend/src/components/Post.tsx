@@ -1,10 +1,10 @@
 import { Button, Card } from "react-bootstrap";
-import { Post as PostModel } from "../models/post";
-import { dateFormat } from "../utils/dateFormat";
-import styles from "../styles/Post.module.css";
 import { MdDelete } from "react-icons/md";
-import styleUtils from "../styles/utils.module.css";
+import { Post as PostModel } from "../models/post";
 import { Type } from "../models/user";
+import styles from "../styles/Post.module.css";
+import styleUtils from "../styles/utils.module.css";
+import { dateFormat } from "../utils/dateFormat";
 interface PostProps {
   post: PostModel;
   type: Type;
@@ -27,7 +27,7 @@ const Post = ({
   reject,
 
 }: PostProps) => {
-  const { title, text, createdAt, updatedAt, approved ,feedback ,comments} = post;
+  const { title, text, createdAt, updatedAt, approved ,feedback } = post;
 
   let updatedCreatedAt: string;
   if (updatedAt > createdAt) {

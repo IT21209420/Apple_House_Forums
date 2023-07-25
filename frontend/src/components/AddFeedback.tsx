@@ -37,7 +37,7 @@ const AddFeedback = ({
 
       if (postToEdit) {
         input = {...input , approved :false }
-        postResponse = await PostsApi.updatePost(postToEdit._id, input);
+        postResponse = await PostsApi.updatePostAdmin(postToEdit._id, input);
         onPostSaved(postResponse);
       } 
 
