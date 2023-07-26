@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { PostInput } from "../network/posts_api";
 import * as PostsApi from "../network/posts_api";
 import TextInput from "./form/TextInput";
-import { Role, Type } from "../models/user";
+import {Type } from "../models/user";
 
 interface AddPostProps {
   postToEdit?: Post;

@@ -1,11 +1,9 @@
-import React from 'react'
-import { Modal, Form, Button } from "react-bootstrap";
-import { Post } from "../models/post";
+import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { PostInput } from "../network/posts_api";
+import { Post } from "../models/post";
 import * as PostsApi from "../network/posts_api";
+import { PostInput } from "../network/posts_api";
 import TextInput from "./form/TextInput";
-import { Role, Type } from "../models/user";
 
 interface AddPostProps {
   postToEdit?: Post;

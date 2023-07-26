@@ -4,13 +4,10 @@ import { Post as PostModel } from "../models/post";
 import { Type } from "../models/user";
 import * as PostsApi from "../network/posts_api";
 import styles from "../styles/postPage.module.css";
-import AddEditPost from "./AddEditPost";
 import Post from "./Post";
 
 const AllPostPageLoggedInView = () => {
   const [posts, setPosts] = useState<PostModel[]>([]);
-  const [showAddPost, setShowAddPost] = useState(false);
-  const [postToEdit, setPostToEdit] = useState<PostModel | null>(null);
   const [postLoading, setPostLoading] = useState(true);
   const [showPostsLoadingError, setShowPostsLoadingError] = useState(false);
 
@@ -22,7 +19,7 @@ const AllPostPageLoggedInView = () => {
             type={Type.ALLPOSTS}
             post={post}
             className={styles.post}
-            onPostClicked={setPostToEdit}
+            onPostClicked={null}
             onDletePostClicked={null}
             approve={null}
             reject={null}
@@ -49,31 +46,13 @@ const AllPostPageLoggedInView = () => {
     loadData();
   }, []);
 
-  
-
   return (
     <>
-      
       {postLoading && <Spinner animation="border" variant="primary" />}
       {showPostsLoadingError && <p>Something went wrong!.</p>}
       {!postLoading && !showPostsLoadingError && (
         <>{posts.length > 0 ? gridPosts : <p>Not any posts</p>}</>
       )}
-      {showAddPost && (
-        <AddEditPost
-          onDismiss={() => {
-            setShowAddPost(false);
-          }}
-          onPostSaved={(newPost) => {
-            setPosts([...posts, newPost]);
-            setShowAddPost(false);
-            
-          }}
-         
-        />
-      )}
-      
-       
     </>
   );
 };

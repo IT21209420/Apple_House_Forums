@@ -15,7 +15,7 @@ async function dataFetch(input: RequestInfo, init?: RequestInit) {
     }else{
       throw new Error("Reqest failed! status : " +response.status + "message : " + errMessage);
     }
-    throw Error(errMessage);
+  
   }
 }
 
